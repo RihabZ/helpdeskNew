@@ -39,7 +39,7 @@ private String password;
 
 
 private long codeTechnicien;
-private String civilite;
+
 private String responsable ;
  private String matricule;
  private String internet;

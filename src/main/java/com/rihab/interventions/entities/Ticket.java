@@ -115,22 +115,24 @@ public class Ticket {
    private String interStatut;
    
    
-   
-    @ManyToOne
-    private Equipement equipement;
-
-    @ManyToOne
-    private InterventionNature interventionNature;
+	   
+	    @ManyToOne
+	    private Equipement equipement;
+	
+	    @ManyToOne
+	    private InterventionNature interventionNature;
 
     
+		
+		@ManyToOne
+		private Demandeur demandeur;
+		
+		
+		
+		@ManyToOne
+		private Technicien technicien;
 
-@ManyToOne
-private Demandeur demandeur;
 
-
-
-@ManyToOne
-private Technicien technicien;
 
 
 }

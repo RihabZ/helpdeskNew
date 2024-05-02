@@ -40,11 +40,13 @@ Long countDoneTickets();
 Long countCancelledTickets();
 Long countBlockedTickets();
 //TicketDTO updateTicketSelective(String interCode, String interStatut);
+TicketDTO updateTicketStatus(String interCode, String newStatus);
+List<TicketDTO> getClosedTickets();
+//List<TicketDTO> getAllTicketsWithDemandeurDetails();
+List<TicketDTO> getArchivedTickets();
+List<Ticket> getALLArchivedTickets();
+List<Ticket> getAllTickets1();
 
-
-//TicketDTO convertEntityToDto (Ticket ticket);
-
-//Ticket convertDtoToEntity(TicketDTO ticketDTO);
 
 
 }

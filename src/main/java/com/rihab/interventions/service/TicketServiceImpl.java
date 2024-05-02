@@ -18,6 +18,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import org.springframework.ui.ModelMap;
 
+import com.rihab.interventions.dto.DemandeurDTO;
 import com.rihab.interventions.dto.EquipementDTO;
 import com.rihab.interventions.dto.TicketDTO;
 import com.rihab.interventions.dto.TicketStatisticsDTO;
@@ -28,7 +29,7 @@ import com.rihab.interventions.entities.Equipement;
 import com.rihab.interventions.entities.Intervention;
 import com.rihab.interventions.entities.Technicien;
 import com.rihab.interventions.entities.Ticket;
-
+import com.rihab.interventions.entities.User;
 import com.rihab.interventions.repos.TicketRepository;
 
 import com.rihab.interventions.util.EmailService;
@@ -65,7 +66,49 @@ return toTicketDTO(ticketRepository.save(toTicket(inter)));
 }
 
 */
+/*
+public List<TicketDTO> getAllTicketsWithDemandeurDetails() {
+    List<Ticket> tickets = ticketRepository.findAll();
+    List<TicketDTO> ticketDTOs = new ArrayList<>();
 
+    for (Ticket ticket : tickets) {
+        TicketDTO ticketDTO = toTicketDTO(ticket);
+        Demandeur demandeur = ticket.getDemandeur();
+        if (demandeur != null) {
+            UserDTO demandeurDTO = toUserDTO(demandeur.getUser()); // Convertir le demandeur en DTO
+            ticketDTO.setDemandeurr(demandeurDTO);
+        }
+        ticketDTOs.add(ticketDTO);
+    }
+
+    return ticketDTOs;
+}
+public UserDTO toUserDTO(User user) {
+    UserDTO userDTO = new UserDTO();
+    userDTO.setId(user.getId());
+    userDTO.setNom(user.getNom());
+    userDTO.setPrenom(user.getPrenom());
+    userDTO.setEmail(user.getEmail());
+    userDTO.setTel(user.getTel());
+    userDTO.setAge(user.getAge());
+    userDTO.setRole(user.getRole());
+    userDTO.setSexe(user.getSexe());
+    userDTO.setCodeDemandeur(user.getDemandeur().getCodeDemandeur());
+    userDTO.setPost(user.getDemandeur().getPost());
+    userDTO.setAdresse(user.getDemandeur().getClient().getAdresse());
+    userDTO.setCodePostal(user.getDemandeur().getClient().getCodePostal());
+    userDTO.setVille(user.getDemandeur().getClient().getVille());
+    userDTO.setEmailSociete(user.getDemandeur().getClient().getEmailSociete());
+    userDTO.setTell(user.getDemandeur().getClient().getTel());
+    userDTO.setUsername(user.getUsername());
+    userDTO.setCodeClient(user.getDemandeur().getClient().getCodeClient());
+    userDTO.setDateEmbauche(user.getDateEmbauche());
+
+    // Autres attributs à convertir selon vos besoins
+
+    return userDTO;
+}
+*/
 @Override
 public TicketDTO saveTicket(TicketDTO ticketDTO) {
     // Get the authenticated user
@@ -178,7 +221,8 @@ public TicketDTO updateTicket(TicketDTO inter) {
 */
 @Override
 public TicketDTO updateTicket(TicketDTO updatedTicketDTO) {
-    // Vérifiez d'abord si le ticket à mettre à jour existe dans la base de données
+   
+	// Vérifiez d'abord si le ticket à mettre à jour existe dans la base de données
     Optional<Ticket> optionalTicket = ticketRepository.findByInterCode(updatedTicketDTO.getInterCode());
 
     if (optionalTicket.isPresent()) {
@@ -196,25 +240,12 @@ public TicketDTO updateTicket(TicketDTO updatedTicketDTO) {
         existingTicket.setDescription(updatedTicketDTO.getDescription());
         existingTicket.setSousContrat(updatedTicketDTO.getSousContrat());
         existingTicket.setSousGarantie(updatedTicketDTO.getSousGarantie());
-      
+      //  existingTicket.setIntervention(updatedTicketDTO.getIntervention());
         existingTicket.setEquipement(updatedTicketDTO.getEquipement());
         existingTicket.setDemandeur(updatedTicketDTO.getDemandeur());
-        existingTicket.setTechnicien(updatedTicketDTO.getTechnicien());
+      //  existingTicket.setTechnicien(updatedTicketDTO.getTechnicien());
         existingTicket.setInterventionNature(updatedTicketDTO.getInterventionNature());
-      /*
-        existingTicket.getIntervention().setDateCloture(updatedTicketDTO.getDateCloture());
-        existingTicket.getIntervention().setDescriptionPanne(updatedTicketDTO.getDescriptionPanne());
-        existingTicket.getIntervention().setDtRealisation(updatedTicketDTO.getDtRealisation());
-        existingTicket.getIntervention().setDureeRealisation(updatedTicketDTO.getDureeRealisation());
-        existingTicket.getIntervention().setCompteRendu(updatedTicketDTO.getCompteRendu());
-        existingTicket.getIntervention().setInterventionObservation(updatedTicketDTO.getInterventionObservation());
-        existingTicket.getIntervention().setInterMtHebergement(updatedTicketDTO.getInterMtHebergement());
-        existingTicket.getIntervention().setInterMtDeplacement(updatedTicketDTO.getInterMtDeplacement());
-        existingTicket.getIntervention().setDifficulté(updatedTicketDTO.getDifficulté());
-        existingTicket.getIntervention().setInterventionType(updatedTicketDTO.getInterventionType());
-        existingTicket.getIntervention().setCause(updatedTicketDTO.getCause());
-*/
-        
+      
         
         // Enregistrez les modifications dans la base de données
         Ticket updatedTicket = ticketRepository.save(existingTicket);
@@ -225,7 +256,21 @@ public TicketDTO updateTicket(TicketDTO updatedTicketDTO) {
         // Gérez le cas où le ticket n'existe pas dans la base de données
         return null; // Ou lancez une exception appropriée
     }
+   
 }
+/*
+existingTicket.getIntervention().setDateCloture(updatedTicketDTO.getDateCloture());
+existingTicket.getIntervention().setDescriptionPanne(updatedTicketDTO.getDescriptionPanne());
+existingTicket.getIntervention().setDtRealisation(updatedTicketDTO.getDtRealisation());
+existingTicket.getIntervention().setDureeRealisation(updatedTicketDTO.getDureeRealisation());
+existingTicket.getIntervention().setCompteRendu(updatedTicketDTO.getCompteRendu());
+existingTicket.getIntervention().setInterventionObservation(updatedTicketDTO.getInterventionObservation());
+existingTicket.getIntervention().setInterMtHebergement(updatedTicketDTO.getInterMtHebergement());
+existingTicket.getIntervention().setInterMtDeplacement(updatedTicketDTO.getInterMtDeplacement());
+existingTicket.getIntervention().setDifficulté(updatedTicketDTO.getDifficulté());
+existingTicket.getIntervention().setInterventionType(updatedTicketDTO.getInterventionType());
+existingTicket.getIntervention().setCause(updatedTicketDTO.getCause());
+*/
 
 
 /*
@@ -306,8 +351,7 @@ public List<Ticket> findByTechnicienCodeTechnicien(long codeTechnicien)
 return ticketRepository.findByTechnicienCodeTechnicien( codeTechnicien);
 
 }
-*/
-@Override
+*/@Override
 public List<Ticket> findByLoggedInTechnicien() {
     // Obtenir l'utilisateur connecté
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -322,15 +366,37 @@ public List<Ticket> findByLoggedInTechnicien() {
 
         // Vérifier si le technicien existe
         if (technicien != null) {
-            // Récupérer les tickets associés à ce technicien avec le statut "à réaliser"
-        	return ticketRepository.findByTechnicienCodeTechnicienAndInterStatutIn(technicien.getCodeTechnicien(), Arrays.asList("à réaliser", "réalisé"));
+            // Obtenez la date actuelle
+            LocalDate currentDate = LocalDate.now();
+
+            // Calculez la date limite pour les tickets non archivés (date actuelle - 2 mois)
+            LocalDate limitDate = currentDate.minusMonths(2);
+
+            // Convertissez la limite de date en objet Date
+            Date limitDateAsDate = Date.from(limitDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+            // Récupérez tous les tickets non archivés associés à ce technicien
+            return ticketRepository.findAllByTechnicienCodeTechnicien(technicien.getCodeTechnicien(), limitDateAsDate);
         }
     }
     // Si aucune condition n'est remplie ou si le technicien n'existe pas, retourner une liste vide
     return new ArrayList<>();
 }
 
+@Override
+public TicketDTO updateTicketStatus(String interCode, String interStatut) {
+    Optional<Ticket> optionalTicket = ticketRepository.findByInterCode(interCode);
 
+    if (optionalTicket.isPresent()) {
+        Ticket existingTicket = optionalTicket.get();
+        existingTicket.setInterStatut(interStatut);
+        Ticket updatedTicket = ticketRepository.save(existingTicket);
+        return toTicketDTO(updatedTicket);
+    } else {
+        // Gérer le cas où le ticket n'existe pas
+        return null; // Ou lancez une exception appropriée
+    }
+}
 
 @Override
 public List<Ticket> findByLoggedInDemandeur() {
@@ -347,15 +413,22 @@ public List<Ticket> findByLoggedInDemandeur() {
 
         // Vérifier si le demandeur existe
         if (demandeur != null) {
-            // Récupérer les tickets associés à ce demandeur
-            return ticketRepository.findByDemandeurCodeDemandeur(demandeur.getCodeDemandeur());
+            // Obtenez la date actuelle
+            LocalDate currentDate = LocalDate.now();
+
+            // Calculez la date limite pour les tickets récents (date actuelle - 2 mois)
+            LocalDate limitDate = currentDate.minusMonths(2);
+
+            // Convertissez la limite de date en objet Date
+            Date limitDateAsDate = Date.from(limitDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+            // Récupérez tous les tickets récents associés à ce demandeur
+            return ticketRepository.findAllByDemandeurCodeDemandeur(demandeur.getCodeDemandeur(), limitDateAsDate);
         }
     }
     // Si aucune condition n'est remplie ou si le demandeur n'existe pas, retourner une liste vide
     return new ArrayList<>();
 }
-
-
 
 	
 	public Ticket toTicket(TicketDTO request) {
@@ -479,7 +552,130 @@ public List<Ticket> findByLoggedInDemandeur() {
 	        calendarService.addNewTicketsToCalendar(newTickets);
 	    }
 
-	}
+	  
 
+	    
+	    @Override
+	    public List<TicketDTO> getClosedTickets() {
+	    	
+	    	// Obtenir l'utilisateur connecté
+	        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
+	        // Vérifier si l'utilisateur est authentifié et est un utilisateur avec les rôles appropriés
+	        if (authentication != null && authentication.isAuthenticated()) {
+	            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
 
+	            // Récupérer les détails du demandeur à partir de userDetails
+	            String username = userDetails.getUsername(); // Supposons que le nom d'utilisateur soit l'identifiant du demandeur
+	            Demandeur demandeur = demandeurService.getDemandeurByUsername(username); // Supposez que vous avez une méthode dans le service pour rechercher le demandeur par nom d'utilisateur
+	
+	         // Vérifier si le demandeur existe
+	            if (demandeur != null) {
+	    	
+	    	
+	        // Obtenez la date actuelle
+	        LocalDate currentDate = LocalDate.now();
+
+	        // Calculez la date limite pour les tickets clôturés (date de clôture + 2 mois)
+	        LocalDate limitDate = currentDate.minusMonths(2);
+
+	        // Convertissez la limite de date en objet Date
+	        Date limitDateAsDate = Date.from(limitDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+	        // Récupérez tous les tickets avec une intervention clôturée avant la limite de date
+	        List<Ticket> closedTickets = ticketRepository.findAllByDemandeurCodeDemandeurAndInterventionDateClotureBefore(demandeur.getCodeDemandeur(),limitDateAsDate);
+
+	        // Convertissez les tickets en DTO
+	        List<TicketDTO> closedTicketsDTO = closedTickets.stream()
+	                .map(this::toTicketDTO)
+	                .collect(Collectors.toList());
+
+	        return closedTicketsDTO;
+	    }
+
+	    
+	    
+	
+
+	        }
+			return null;
+	        
+	    }
+
+	    @Override
+	    public List<TicketDTO> getArchivedTickets() {
+	        // Obtenir l'utilisateur connecté
+	        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+	        // Vérifier si l'utilisateur est authentifié et est un utilisateur avec les rôles appropriés
+	        if (authentication != null && authentication.isAuthenticated()) {
+	            UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+
+	            // Récupérer les détails du technicien à partir de userDetails
+	            String username = userDetails.getUsername();
+	            Technicien technicien = technicienService.getTechnicienByUsername(username);
+
+	            // Vérifier si le technicien existe
+	            if (technicien != null) {
+	                // Obtenez la date actuelle
+	                LocalDate currentDate = LocalDate.now();
+
+	                // Calculez la date limite pour les tickets clôturés (date de clôture + 2 mois)
+	                LocalDate limitDate = currentDate.minusMonths(2);
+
+	                // Convertissez la limite de date en objet Date
+	                Date limitDateAsDate = Date.from(limitDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+	                // Récupérez tous les tickets clôturés dont la date de clôture de l'intervention a dépassé la limite de date
+	                List<Ticket> closedTickets = ticketRepository.findAllByTechnicienCodeTechnicienAndInterventionDateClotureBefore(technicien.getCodeTechnicien(), limitDateAsDate);
+
+	                // Convertissez les tickets en DTO
+	                List<TicketDTO> closedTicketsDTO = closedTickets.stream()
+	                        .map(this::toTicketDTO)
+	                        .collect(Collectors.toList());
+
+	                return closedTicketsDTO;
+	            }
+	        }
+	        // Si aucune condition n'est remplie ou si le technicien n'existe pas, retourner une liste vide
+	        return new ArrayList<>();
+	    }
+
+	    
+	    @Override
+	    public List<Ticket> getALLArchivedTickets() {
+	        // Obtenez la date actuelle
+	        LocalDate currentDate = LocalDate.now();
+
+	        // Calculez la date limite pour les tickets archivés (date de clôture + 2 mois)
+	        LocalDate limitDate = currentDate.minusMonths(2);
+
+	        // Convertissez la limite de date en objet Date
+	        Date limitDateAsDate = Date.from(limitDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+	        // Récupérez tous les tickets archivés dont la date de clôture de l'intervention a dépassé la limite de date
+	        List<Ticket> archivedTickets = ticketRepository.findAllArchivedByInterventionDateClotureBefore(limitDateAsDate);
+
+	        return archivedTickets;
+	    }
+  
+	    
+	    
+	    @Override
+	    public List<Ticket> getAllTickets1() {
+	        // Obtenez la date actuelle
+	        LocalDate currentDate = LocalDate.now();
+
+	        // Calculez la date limite pour les tickets non archivés (date de clôture + 2 mois)
+	        LocalDate limitDate = currentDate.minusMonths(2);
+
+	        // Convertissez la limite de date en objet Date
+	        Date limitDateAsDate = Date.from(limitDate.atStartOfDay(ZoneId.systemDefault()).toInstant());
+
+	        // Récupérez tous les tickets qui ne sont pas archivés et dont la date de clôture de l'intervention est après la limite de date
+	        List<Ticket> activeTickets = ticketRepository.findAllByInterventionDateClotureAfterOrEqualTo(limitDateAsDate);
+
+	        return activeTickets;
+	    }
+
+}

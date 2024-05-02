@@ -70,6 +70,7 @@ public class TicketDTO {
   private InterventionNature interventionNature;
   
 private Demandeur demandeur;
+//private UserDTO demandeurr; // Ajout du demandeur
 private Technicien technicien;
 private Intervention intervention;
   

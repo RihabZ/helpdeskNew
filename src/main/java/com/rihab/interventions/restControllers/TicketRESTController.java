@@ -5,11 +5,14 @@ import java.util.List;
 import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -37,8 +40,8 @@ public List<Ticket> getAllTickets() {
 */
 	@PreAuthorize("hasAuthority('MANAGER')")
 @RequestMapping(path = "allTickets", method = RequestMethod.GET)
-public List<TicketDTO> getAllTickets() {
-    return ticketService.getAllTickets();
+public List<Ticket> getAllTickets() {
+    return ticketService.getAllTickets1();
 }
 
 
@@ -59,10 +62,17 @@ public TicketDTO createTicket(@RequestBody TicketDTO ticketDTO) {
 
 @PreAuthorize("hasAuthority('MANAGER')")
 @RequestMapping(path="/updateTicket",method = RequestMethod.PUT)
-
 public TicketDTO updateTicket(@RequestBody TicketDTO ticketDTO) {
 		return ticketService.updateTicket(ticketDTO);
 }
+
+@PreAuthorize("hasAuthority('TECHNICIEN')")
+@PutMapping("/updateTicketStatus/{interCode}")
+public TicketDTO updateTicketStatus(@PathVariable String interCode, @RequestParam String interStatut) {
+    TicketDTO updatedTicket = ticketService.updateTicketStatus(interCode, interStatut);
+    return(updatedTicket);
+}
+
 /*
 @PreAuthorize("hasAuthority('TECHNICIEN')")
 @RequestMapping(path="/updateTickett/{interCode}", method = RequestMethod.PUT)
@@ -150,6 +160,31 @@ public ResponseEntity<Long> countCancelledTickets() {
 public ResponseEntity<Long> countBlockedTickets() {
     Long blockedTickets = ticketService.countBlockedTickets();
     return ResponseEntity.ok().body(blockedTickets);
+}
+
+
+@PreAuthorize("hasAuthority('CLIENT')")
+@GetMapping("/closedDemandeur")
+public List<TicketDTO> getClosedTickets() {
+    List<TicketDTO> closedTickets = ticketService.getClosedTickets();
+    return (closedTickets);
+}
+
+
+
+
+
+@PreAuthorize("hasAuthority('TECHNICIEN')")
+@GetMapping("/archiveTech")
+public List<TicketDTO> getArchivedTickets() {
+    List<TicketDTO> closedTickets = ticketService.getArchivedTickets();
+    return (closedTickets);
+}
+
+@PreAuthorize("hasAuthority('MANAGER')")
+@GetMapping("/allArchived")
+public List<Ticket> getAllArchivedTickets() {
+    return ticketService.getALLArchivedTickets();
 }
 
 }

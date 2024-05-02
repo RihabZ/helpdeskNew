@@ -53,14 +53,16 @@ public class Intervention {
 	   
 	    private double interMtHebergement;
 	    private double interMtDeplacement;
-	   	    @OneToOne(cascade = CascadeType.ALL)
-	    private Ticket ticket;
 	    
-	    @ManyToOne
-	    private InterventionType interventionType;
 	    
-	  
-	    @ManyToOne
-	    private Cause cause;
-	   
+	    		@OneToOne(cascade = CascadeType.ALL)
+	   	    	private Ticket ticket;
+			    
+			    @ManyToOne
+			    private InterventionType interventionType;
+			    
+			  
+			    @ManyToOne
+			    private Cause cause;
+			    
 }
